@@ -1,0 +1,1047 @@
+<!-- =========================================================
+VITEL GLOBAL - 3D HERO BANNER
+HTML + CSS + JAVASCRIPT + WEBGL
+========================================================= -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Vitel Global Hero</title>
+
+    <!-- THREE JS & ADDONS via Import Map -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <!-- GSAP -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        /* =========================================================
+GLOBAL
+========================================================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow-x: hidden;
+            font-family: 'Poppins', sans-serif;
+            background: #060816;
+            color: #fff;
+        }
+
+        /* =========================================================
+VITEL HERO SECTION
+========================================================= */
+
+        #vitelHeroBanner {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            background:
+                linear-gradient(to bottom,
+                    rgba(5, 8, 20, 0),
+                    rgba(4, 6, 15, 0)),
+                url("./space.png");
+            background-size: cover;
+            background-position: bottom;
+        }
+
+        /* =========================================================
+WEBGL CANVAS
+========================================================= */
+
+        #vitelWebGLCanvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 6;
+            pointer-events: none;
+        }
+
+        /* =========================================================
+MOON GLOW
+========================================================= */
+
+        /* =========================================================
+MOON GLOW (PERFECTLY CALIBRATED TO WEBGL SPHERE)
+========================================================= */
+
+        .vitelMoonGlow {
+            position: absolute;
+            /* Mathematical size match based on camera depth matrix */
+            width: 133vh;
+            height: 133vh;
+            border-radius: 50%;
+
+            /* Perfect vertical alignment for globe position (0, 7, -3) */
+            top: -76.8vh;
+            left: 50%;
+            transform: translateX(-50%);
+            background: transparent;
+
+            /* Render priorities and click-through configurations */
+            z-index: 2;
+            pointer-events: none;
+
+            box-shadow:
+                inset 0 0 30px 8px rgba(255, 248, 210, 1),
+                inset 0 0 70px 25px rgba(255, 220, 130, 0),
+                inset 0 0 130px 55px rgba(200, 150, 60, 0.25),
+                0 0 25px 8px rgba(224, 219, 199, 0.103),
+                0 0 60px 22px rgba(255, 200, 90, 0.5),
+                0 0 130px 45px rgba(212, 193, 167, 0.089);
+        }
+
+
+
+
+        /* =========================================================
+CONTENT
+========================================================= */
+
+        .vitelHeroContent {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            width: 100%;
+            top: 12%;
+            padding: 0 20px;
+        }
+
+        .vitelHeroTitle {
+            font-size: 76px;
+            line-height: 1.15;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .vitelHeroTitle span {
+            font-weight: 700;
+        }
+
+        .vitelHeroDesc {
+            margin-top: 30px;
+            font-size: 22px;
+            color: #d4d7e8;
+            line-height: 1.7;
+        }
+
+        /* =========================================================
+BUTTONS
+========================================================= */
+
+        .vitelHeroButtons {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .vitelHeroBtn {
+            padding: 16px 38px;
+            border-radius: 60px;
+            text-decoration: none;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(20px);
+            transition: 0.4s;
+            font-size: 16px;
+        }
+
+        .vitelHeroBtn:hover {
+            transform: translateY(-5px);
+            background: white;
+            color: black;
+        }
+
+        /* Obsolete 2D Astronaut styles removed in favor of 3D GLB model integration */
+
+        /* =========================================================
+SERVICES FLAGS
+========================================================= */
+
+        .vitelServicesWrap {
+            position: absolute;
+            width: 100%;
+            bottom: 80px;
+            z-index: 5;
+
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+
+            padding: 0 60px;
+            /* pointer-events: none; */
+        }
+
+        .vitelServiceFlag {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* FLAG LINE */
+
+        .vitelServiceFlag::after {
+            content: "";
+            width: 2px;
+            height: 55px;
+            background:
+                linear-gradient(to bottom,
+                    rgba(255, 255, 255, 0.6),
+                    transparent);
+        }
+
+        /* FLAG DOT */
+
+        .vitelServiceFlag::before {
+            content: "";
+            position: absolute;
+            bottom: -6px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+
+            box-shadow:
+                0 0 10px rgba(255, 255, 255, 0.7);
+        }
+
+        .vitelServiceFlag--offset {
+            transform: translate(100px, -100px);
+        }
+
+
+        .vitelsmsFlag {
+            transform: translate(150px, -190px);
+        }
+
+        .vitelomniflag {
+            transform: translate(218px, -100px);
+        }
+
+        .vitelwatsappflag {
+            transform: translate(-8px, -153px);
+        }
+
+        .vitelbusinessphoneflag {
+            transform: translate(-40px, -72px);
+        }
+
+        /* SERVICE CARD */
+
+        .vitelServiceCard {
+            padding: 9px 21px;
+            border-radius: 60px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            color: white;
+            transition: 0.4s;
+            cursor: pointer;
+            margin-bottom: 0px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            /* pointer-events: none; */
+        }
+
+        .vitelServiceCard:hover {
+            transform:
+                /* translateY(-10px) */
+                scale(1.05);
+
+            background:
+                rgba(255, 255, 255, 0.15);
+        }
+
+
+        /* =========================================================
+        RESPONSIVE
+        ========================================================= */
+
+        @media(max-width:992px) {
+
+            .vitelHeroTitle {
+                font-size: 42px;
+            }
+
+            .vitelHeroDesc {
+                font-size: 16px;
+            }
+
+            .vitelServicesWrap {
+                flex-wrap: wrap;
+                gap: 20px;
+                bottom: 20px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <!-- =========================================================
+    HERO SECTION
+    ========================================================= -->
+
+    <section id="vitelHeroBanner">
+
+        <!-- WEBGL -->
+        <canvas id="vitelWebGLCanvas"></canvas>
+
+        <!-- GLOW -->
+        <!-- <div class="vitelMoonGlow"></div> -->
+
+        <!-- CONTENT -->
+        <div class="vitelHeroContent">
+
+            <h1 class="vitelHeroTitle">
+
+                The Smarter way to Run & Scale
+                <br>
+
+                Your <span>Business Communication</span>
+
+            </h1>
+
+            <p class="vitelHeroDesc">
+
+                AI-powered unified communications for calling,
+                messaging, meetings, <br> and automation —
+                all in one platform.
+
+            </p>
+
+            <div class="vitelHeroButtons">
+
+                <a href="#" class="vitelHeroBtn">
+                    Request Demo
+                </a>
+
+                <a href="#" class="vitelHeroBtn">
+                    Buy Now
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- 3D Astronaut rendered dynamically inside Three.js WebGL canvas -->
+
+        <!-- SERVICES -->
+        <div class="vitelServicesWrap">
+
+            <div class="vitelServiceFlag vitelbusinessphoneflag">
+
+                <div class="vitelServiceCard">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="icon icon-tabler icons-tabler-outline icon-tabler-phone-call">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path
+                            d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" />
+                        <path d="M15 7a2 2 0 0 1 2 2" />
+                        <path d="M15 3a6 6 0 0 1 6 6" />
+                    </svg> Business Phone System
+                </div>
+
+            </div>
+
+            <div class="vitelServiceFlag vitelwatsappflag">
+
+                <div class="vitelServiceCard">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="icon icon-tabler icons-tabler-outline icon-tabler-brand-whatsapp">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9" />
+                        <path
+                            d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1" />
+                    </svg> Business WhatsApp
+                </div>
+
+            </div>
+
+            <div class="vitelServiceFlag vitelomniflag">
+
+                <div class="vitelServiceCard">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="icon icon-tabler icons-tabler-outline icon-tabler-atom">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M12 12v.01" />
+                        <path
+                            d="M19.071 4.929c-1.562 -1.562 -6 .337 -9.9 4.243c-3.905 3.905 -5.804 8.337 -4.242 9.9c1.562 1.561 6 -.338 9.9 -4.244c3.905 -3.905 5.804 -8.337 4.242 -9.9" />
+                        <path
+                            d="M4.929 4.929c-1.562 1.562 .337 6 4.243 9.9c3.905 3.905 8.337 5.804 9.9 4.242c1.561 -1.562 -.338 -6 -4.244 -9.9c-3.905 -3.905 -8.337 -5.804 -9.9 -4.242" />
+                    </svg> Vitel Omnichannel
+                </div>
+
+            </div>
+
+            <div class="vitelServiceFlag vitelsmsFlag">
+
+                <div class="vitelServiceCard">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="icon icon-tabler icons-tabler-outline icon-tabler-message">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M8 9h8" />
+                        <path d="M8 13h6" />
+                        <path
+                            d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12" />
+                    </svg> Vitel SMS
+                </div>
+
+            </div>
+
+            <div class="vitelServiceFlag vitelServiceFlag--offset">
+
+                <div class="vitelServiceCard">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="icon icon-tabler icons-tabler-outline icon-tabler-video">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path
+                            d="M15 10l4.553 -2.276a1 1 0 0 1 1.447 .894v6.764a1 1 0 0 1 -1.447 .894l-4.553 -2.276v-4" />
+                        <path d="M3 8a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2l0 -8" />
+                    </svg> AI Vitel Meet
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <script type="module">
+
+        /* =========================================================
+        THREE JS WEBGL & GLB LOADING
+        ========================================================= */
+        import * as THREE from 'three';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+
+        const scene = new THREE.Scene();
+
+        const camera = new THREE.PerspectiveCamera(
+            75,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            1000
+        );
+
+        const renderer = new THREE.WebGLRenderer({
+            canvas: document.getElementById("vitelWebGLCanvas"),
+            alpha: true,
+            antialias: true
+        });
+
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+        camera.position.z = 5;
+
+        /* =========================================================
+        STARS
+        ========================================================= */
+
+        const starsGeometry =
+            new THREE.BufferGeometry();
+
+        const starsCount = 1500;
+
+        const starsPositions = [];
+
+        for (let i = 0; i < starsCount; i++) {
+
+            starsPositions.push(
+                (Math.random() - 0.5) * 2000,
+                (Math.random() - 0.5) * 2000,
+                (Math.random() - 0.5) * 2000
+            );
+
+        }
+
+        starsGeometry.setAttribute(
+            "position",
+            new THREE.Float32BufferAttribute(
+                starsPositions,
+                3
+            )
+        );
+
+        const starsMaterial =
+            new THREE.PointsMaterial({
+                color: "#ffffff",
+                size: 1
+            });
+
+        const stars =
+            new THREE.Points(
+                starsGeometry,
+                starsMaterial
+            );
+
+        scene.add(stars);
+
+        /* =========================================================
+        3D GLOBE
+        ========================================================= */
+
+        const globeGeometry =
+            new THREE.SphereGeometry(
+                8,
+                128,
+                128
+            );
+
+        const globeTexture =
+            new THREE.TextureLoader().load(
+                "./moon-bg-8.png"
+            );
+
+        globeTexture.repeat.set(1, 0.75);
+
+        const globeMaterial =
+            new THREE.MeshStandardMaterial({
+                map: globeTexture,
+                roughness: 1
+            });
+
+        const globe =
+            new THREE.Mesh(
+                globeGeometry,
+                globeMaterial
+            );
+
+        scene.add(globe);
+
+        /* =========================================================
+        3D ATMOSPHERE GLOW (WHITE - PERFECTLY ALIGNED)
+        ========================================================= */
+
+        const glowMaterial = new THREE.ShaderMaterial({
+            vertexShader: `
+        varying vec3 vNormal;
+        varying vec3 vViewPosition;
+        void main() {
+            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+            vViewPosition = -mvPosition.xyz;
+            vNormal = normalize(normalMatrix * normal);
+            gl_Position = projectionMatrix * mvPosition;
+        }
+    `,
+            fragmentShader: `
+        varying vec3 vNormal;
+        varying vec3 vViewPosition;
+        void main() {
+            vec3 normal = normalize(vNormal);
+            vec3 viewDir = normalize(vViewPosition);
+            float intensity = pow(1.0 - max(dot(normal, viewDir), 0.0), 1.8);
+            vec3 glowColor = vec3(1.0, 1.0, 1.0); 
+            gl_FragColor = vec4(glowColor * intensity * 1.0, intensity);
+        }
+    `,
+            blending: THREE.AdditiveBlending,
+            side: THREE.FrontSide,
+            transparent: true,
+            depthWrite: false
+        });
+
+        const glowGeometry = new THREE.SphereGeometry(8.05, 128, 128);
+        const moonGlowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
+
+        moonGlowMesh.position.copy(globe.position);
+        scene.add(moonGlowMesh);
+
+        globe.position.set(0, 7.5, -2);
+
+        /* =========================================================
+        ASTRONAUT INTEGRATION (GLTFLOADER)
+        ========================================================= */
+
+        let astronaut = null;
+        let astronautWrapper = null;
+        let mixer = null;
+        const clock = new THREE.Clock();
+
+        // Base transform variables for calibration
+        let baseY = -2.0;
+        let baseZ = 1.8;
+        let baseRotY = Math.PI;
+
+        // Create the wrapper group to hold the centered model
+        astronautWrapper = new THREE.Group();
+        astronautWrapper.name = "astronautWrapper";
+        scene.add(astronautWrapper);
+
+        // Load 3D Astronaut model
+        const gltfLoader = new GLTFLoader();
+
+        // Configure DRACOLoader to support optimized Draco-compressed models (up to 10x smaller)
+        const dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/');
+        gltfLoader.setDRACOLoader(dracoLoader);
+
+        gltfLoader.load(
+            "./astronut.glb",
+            (gltf) => {
+                astronaut = gltf.scene;
+
+                // Adjust materials for premium look
+                astronaut.traverse((child) => {
+                    if (child.isMesh) {
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+                        if (child.material) {
+                            child.material.roughness = 0.45;
+                            child.material.metalness = 0.7;
+                        }
+                    }
+                });
+
+                astronautWrapper.add(astronaut);
+
+                // Calibrate scale and position wrapper
+                calibrateAstronaut();
+
+                // Initialize AnimationMixer if the model has skeletal animations
+                if (gltf.animations && gltf.animations.length > 0) {
+                    mixer = new THREE.AnimationMixer(astronaut);
+                    const action = mixer.clipAction(gltf.animations[0]);
+                    action.play();
+                }
+            },
+            undefined, // No loader callback requested by user
+            (error) => {
+                console.error("An error occurred loading the GLB model:", error);
+            }
+        );
+
+        // Calibrate wrapper scale and position bounds relative to model dimensions
+        function calibrateAstronaut() {
+            if (!astronaut || !astronautWrapper) return;
+
+            // Reset local dimensions of model child
+            astronaut.scale.set(1, 1, 1);
+            astronaut.position.set(0, 0, 0);
+            astronaut.rotation.set(0, 0, 0);
+
+            // Compute size using bounding box
+            const box = new THREE.Box3().setFromObject(astronaut);
+            const size = box.getSize(new THREE.Vector3());
+            const center = box.getCenter(new THREE.Vector3());
+
+            // Center original geometry relative to wrapper
+            astronaut.position.set(-center.x, -center.y, -center.z);
+
+            // Responsive height target - calibrated to be smaller and sit on ground plane
+            let targetHeight = 0.35;
+            if (window.innerWidth < 768) {
+                targetHeight = 0.35;
+                baseY = -2.2;
+                baseZ = 1.8;
+            } else if (window.innerWidth < 992) {
+                targetHeight = 0.35;
+                baseY = -2.1;
+                baseZ = 1.8;
+            } else {
+                targetHeight = 0.35;
+                baseY = -2.0;
+                baseZ = 1.8;
+            }
+
+            if (size.y > 0) {
+                const scaleFactor = targetHeight / size.y;
+                astronautWrapper.scale.set(scaleFactor, scaleFactor, scaleFactor);
+            }
+
+            // Maintain current animated X, update Y and Z responsive bases
+            astronautWrapper.position.set(
+                astronautWrapper.position.x !== undefined ? astronautWrapper.position.x : 0,
+                baseY,
+                baseZ
+            );
+
+            // Set cinematic default rotation facing straight away from viewer (towards planet)
+            astronautWrapper.rotation.set(0.0, baseRotY, 0);
+        }
+
+        /* =========================================================
+        LIGHTS
+        ========================================================= */
+
+        const ambientLight =
+            new THREE.AmbientLight(
+                0xffffff,
+                0.8
+            );
+
+        scene.add(ambientLight);
+
+        const directionalLight =
+            new THREE.DirectionalLight(
+                0xffffff,
+                1.5
+            );
+
+        directionalLight.position.set(
+            5,
+            5,
+            5
+        );
+
+        scene.add(directionalLight);
+
+        // Premium multi-colored dynamic lights tailored for astronaut metallic details
+        const astronautKeyLight = new THREE.DirectionalLight(0xfff0dd, 2.5); // Warm sun accent
+        astronautKeyLight.position.set(5, 5, 2);
+        scene.add(astronautKeyLight);
+
+        const astronautRimLight = new THREE.DirectionalLight(0xa855f7, 4.0); // Vibrant neon purple from nebula
+        astronautRimLight.position.set(-6, -3, -2);
+        scene.add(astronautRimLight);
+
+        const astronautFillLight = new THREE.DirectionalLight(0x3b82f6, 2.0); // Cool space ambient blue
+        astronautFillLight.position.set(4, -4, 1);
+        scene.add(astronautFillLight);
+
+        /* =========================================================
+        ANIMATE
+        ========================================================= */
+
+        function animate() {
+
+            requestAnimationFrame(animate);
+
+            globe.rotation.y += 0.0015;
+            stars.rotation.y += 0.0002;
+
+            // Update volumetric glowing atmospheric aura snapping
+            moonGlowMesh.position.copy(globe.position);
+
+            const delta = clock.getDelta();
+            const time = clock.getElapsedTime();
+
+            // Perform dynamic skeletal animations
+            if (mixer) {
+                mixer.update(delta);
+            }
+
+            // Implement a cinematic slow floating drift overlay on the wrapper group
+            if (astronautWrapper && astronaut) {
+                // Procedural Y-axis float drift
+                astronautWrapper.position.y = baseY + Math.sin(time * 1.5) * 0.12;
+
+                // Subtle random roll rotation
+                astronautWrapper.rotation.z = Math.cos(time * 0.6) * 0.03;
+            }
+
+            renderer.render(scene, camera);
+
+        }
+
+        animate();
+
+        /* =========================================================
+        RESIZE
+        ========================================================= */
+
+        window.addEventListener(
+            "resize",
+            () => {
+
+                camera.aspect =
+                    window.innerWidth / window.innerHeight;
+
+                camera.updateProjectionMatrix();
+
+                renderer.setSize(
+                    window.innerWidth,
+                    window.innerHeight
+                );
+
+                calibrateAstronaut();
+
+            });
+
+
+        /* =========================================================
+        ASTRONAUT MOVEMENT TO FLAGS
+        ========================================================= */
+
+        // Get all flag elements
+        const flagElements =
+            document.querySelectorAll(
+                ".vitelServiceFlag"
+            );
+
+        const flags = Array.from(flagElements);
+
+        // Distance threshold - if mouse is beyond this, astronaut returns to center
+        const INTERACTION_THRESHOLD = 400;
+
+        function getDistance(
+            mouseX,
+            mouseY,
+            flagX,
+            flagY
+        ) {
+            const dx = mouseX - flagX;
+            const dy = mouseY - flagY;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        function getFlagPosition(flagElement) {
+            const rect = flagElement.getBoundingClientRect();
+            return {
+                x: rect.left + rect.width / 2,
+                y: rect.top + rect.height / 2
+            };
+        }
+
+        function getClosestFlag(mouseX, mouseY) {
+            let closestFlag = null;
+            let closestDistance = Infinity;
+
+            flags.forEach(flag => {
+                const flagPos = getFlagPosition(flag);
+                const distance = getDistance(
+                    mouseX,
+                    mouseY,
+                    flagPos.x,
+                    flagPos.y
+                );
+
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestFlag = flag;
+                }
+            });
+
+            return {
+                flag: closestFlag,
+                distance: closestDistance
+            };
+        }
+
+        // Track mouse movement and move astronaut to closest flag
+        document.addEventListener(
+            "mousemove",
+            (e) => {
+
+                const { flag: closestFlag, distance: closestDistance } =
+                    getClosestFlag(
+                        e.clientX,
+                        e.clientY
+                    );
+
+                if (closestFlag && closestDistance < INTERACTION_THRESHOLD) {
+                    const flagRect = closestFlag.getBoundingClientRect();
+                    const flagCenterX = flagRect.left + flagRect.width / 2 - window.innerWidth / 2;
+
+                    if (astronautWrapper) {
+                        // Mathematically map 2D coordinates to WebGL frustum width
+                        const distanceToCamera = camera.position.z - baseZ;
+                        const halfFovRad = (camera.fov * Math.PI) / 360;
+                        const aspect = window.innerWidth / window.innerHeight;
+                        const max3DWidth = Math.tan(halfFovRad) * distanceToCamera * aspect * 0.85;
+
+                        const targetX = (flagCenterX / (window.innerWidth / 2)) * max3DWidth;
+                        const targetRotY = baseRotY - (targetX * 0.15); // Lean rotation
+
+                        gsap.to(astronautWrapper.position, {
+                            x: targetX,
+                            duration: 0.8,
+                            ease: "power3.out"
+                        });
+
+                        gsap.to(astronautWrapper.rotation, {
+                            y: targetRotY,
+                            duration: 0.8,
+                            ease: "power3.out"
+                        });
+                    }
+                }
+                else {
+                    if (astronautWrapper) {
+                        gsap.to(astronautWrapper.position, {
+                            x: 0,
+                            duration: 0.8,
+                            ease: "power3.out"
+                        });
+
+                        gsap.to(astronautWrapper.rotation, {
+                            y: baseRotY,
+                            duration: 0.8,
+                            ease: "power3.out"
+                        });
+                    }
+                }
+
+            });
+
+        /* =========================================================
+        SERVICE HOVER MOVEMENT
+        ========================================================= */
+
+        const vitelServices =
+            document.querySelectorAll(
+                ".vitelServiceCard"
+            );
+
+        vitelServices.forEach((service, index) => {
+
+            service.addEventListener(
+                "mouseenter",
+                () => {
+
+                    const parentFlag = service.closest(".vitelServiceFlag");
+                    const flagRect = parentFlag.getBoundingClientRect();
+                    const targetX = flagRect.left + flagRect.width / 2 - window.innerWidth / 2;
+
+                    if (astronautWrapper) {
+                        const distanceToCamera = camera.position.z - baseZ;
+                        const halfFovRad = (camera.fov * Math.PI) / 360;
+                        const aspect = window.innerWidth / window.innerHeight;
+                        const max3DWidth = Math.tan(halfFovRad) * distanceToCamera * aspect * 0.85;
+
+                        const threeX = (targetX / (window.innerWidth / 2)) * max3DWidth;
+                        const targetRotY = baseRotY - (threeX * 0.15);
+
+                        gsap.to(astronautWrapper.position, {
+                            x: threeX,
+                            duration: 0.6,
+                            ease: "power3.out"
+                        });
+
+                        gsap.to(astronautWrapper.rotation, {
+                            y: targetRotY,
+                            duration: 0.6,
+                            ease: "power3.out"
+                        });
+                    }
+
+                }
+            );
+
+        });
+
+        /* =========================================================
+        GSAP ANIMATION
+        ========================================================= */
+
+        gsap.registerPlugin(
+            ScrollTrigger
+        );
+
+        gsap.from(
+            ".vitelHeroTitle",
+            {
+                y: 120,
+                opacity: 0,
+                duration: 1.5
+            }
+        );
+
+        gsap.from(
+            ".vitelHeroDesc",
+            {
+                y: 80,
+                opacity: 0,
+                duration: 1.5,
+                delay: 0.3
+            }
+        );
+
+        gsap.from(
+            ".vitelHeroButtons",
+            {
+                y: 80,
+                opacity: 0,
+                duration: 1.5,
+                delay: 0.5
+            }
+        );
+
+        gsap.from(
+            ".vitelServiceFlag",
+            {
+                y: 80,
+                opacity: 0,
+                stagger: 0.15,
+                duration: 1.2,
+                delay: 0.8
+            }
+        );
+
+        /* =========================================================
+        SCROLL BASED ANIMATION
+        ========================================================= */
+
+        gsap.to(
+            globe.rotation,
+            {
+                y: 6,
+
+                scrollTrigger: {
+                    trigger: "#vitelHeroBanner",
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: 1
+                }
+            }
+        );
+
+        gsap.to(
+            camera.position,
+            {
+                z: 3,
+
+                scrollTrigger: {
+                    trigger: "#vitelHeroBanner",
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: 1
+                }
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>

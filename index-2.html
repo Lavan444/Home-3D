@@ -1,0 +1,1149 @@
+<!-- =========================================================
+VITEL GLOBAL - 3D HERO BANNER
+HTML + CSS + JAVASCRIPT + WEBGL
+========================================================= -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Vitel Global Hero</title>
+
+<!-- THREE JS -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script> -->
+
+<!-- GSAP -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script> -->
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.121.1/examples/js/controls/OrbitControls.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
+
+<link
+href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet"
+/>
+
+<style>
+
+/* =========================================================
+GLOBAL
+========================================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    overflow-x:hidden;
+    font-family:'Poppins',sans-serif;
+    background:#060816;
+    color:#fff;
+}
+
+/* =========================================================
+VITEL HERO SECTION
+========================================================= */
+
+#vitelHeroBanner{
+    position:relative;
+    width:100%;
+    height:100vh;
+    overflow:hidden;
+    background:
+    linear-gradient(
+    to bottom,
+    rgba(5, 8, 20, 0),
+    rgba(4, 6, 15, 0)),
+    url("./space.png");
+    background-size:cover;
+    background-position:bottom;
+}
+
+/* =========================================================
+WEBGL CANVAS
+========================================================= */
+
+#vitelWebGLCanvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:1;
+}
+
+/* =========================================================
+MOON GLOW
+========================================================= */
+
+.vitelMoonGlow{
+    position:absolute;
+    width:153vh;
+    height:130vh;
+    border-radius:50%;
+    top:-71.3vh;
+    left:50%;
+    transform:translateX(-50%);
+    background:transparent;
+    box-shadow:
+        inset 0 0 30px  8px  rgba(255,248,210,1),
+        inset 0 0 70px  25px rgba(255, 220, 130, 0),
+        inset 0 0 130px 55px rgba(200,150,60,0.25),
+        0 0 25px  8px  rgba(224, 219, 199, 0.103),
+        0 0 60px  22px rgba(255,200,90,0.5),
+        0 0 130px 45px rgba(212, 193, 167, 0.089);
+        /* box-shadow:
+    inset 0 0 30px 8px rgba(255,255,255,0.55),
+    inset 0 0 70px 25px rgba(255,255,255,0.28),
+    inset 0 0 130px 55px rgba(255,255,255,0.12),
+
+    0 0 25px 8px rgba(255,255,255,0.45),
+    0 0 60px 22px rgba(255,255,255,0.25),
+    0 0 130px 45px rgba(255,255,255,0.12); */
+
+    z-index:1;
+}
+
+
+
+/* =========================================================
+CONTENT
+========================================================= */
+
+.vitelHeroContent{
+    position:relative;
+    z-index:5;
+    text-align:center;
+    width:100%;
+    top:12%;
+    padding:0 20px;
+}
+
+.vitelHeroTitle{
+    font-size:76px;
+    line-height:1.15;
+    font-weight:300;
+    letter-spacing:1px;
+}
+
+.vitelHeroTitle span{
+    font-weight:700;
+}
+
+.vitelHeroDesc{
+    margin-top:30px;
+    font-size:22px;
+    color:#d4d7e8;
+    line-height:1.7;
+}
+
+/* =========================================================
+BUTTONS
+========================================================= */
+
+.vitelHeroButtons{
+    margin-top:40px;
+    display:flex;
+    justify-content:center;
+    gap:20px;
+}
+
+.vitelHeroBtn{
+    padding:16px 38px;
+    border-radius:60px;
+    text-decoration:none;
+    color:white;
+    border:1px solid rgba(255,255,255,0.4);
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(20px);
+    transition:0.4s;
+    font-size:16px;
+}
+
+.vitelHeroBtn:hover{
+    transform:translateY(-5px);
+    background:white;
+    color:black;
+}
+
+/* =========================================================
+ASTRONAUT
+========================================================= */
+
+#vitelAstronaut{
+    position:absolute;
+    bottom:0px;
+    left:50%;
+    transform:translateX(-50%);
+    width:auto;
+    z-index:10;
+
+    filter:
+    drop-shadow(0 0 40px rgba(255,255,255,0.35))
+    drop-shadow(0 0 80px rgba(129,160,255,0.25));
+
+    /* animation:vitelAstronautFloat 6s ease-in-out infinite; */
+}
+
+@keyframes vitelAstronautFloat{
+
+    0%{
+        transform:
+        translateX(-50%)
+        translateY(0px);
+    }
+
+    50%{
+        transform:
+        translateX(-50%)
+        translateY(-22px);
+    }
+
+    100%{
+        transform:
+        translateX(-50%)
+        translateY(0px);
+    }
+
+}
+
+/* =========================================================
+SERVICES FLAGS
+========================================================= */
+
+.vitelServicesWrap{
+    position:absolute;
+    width:100%;
+    bottom:80px;
+    z-index:5;
+
+    display:flex;
+    justify-content:space-around;
+    align-items:flex-end;
+
+    padding:0 60px;
+}
+
+.vitelServiceFlag{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+/* FLAG LINE */
+
+.vitelServiceFlag::after{
+    content:"";
+    width:2px;
+    height:55px;
+    background:
+    linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.6),
+    transparent);
+}
+
+/* FLAG DOT */
+
+.vitelServiceFlag::before{
+    content:"";
+    position:absolute;
+    bottom:-6px;
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.6);
+
+    box-shadow:
+    0 0 10px rgba(255,255,255,0.7);
+}
+
+.vitelServiceFlag--offset{
+    transform: translate(100px, -100px);
+}
+
+
+.vitelsmsFlag{
+   transform: translate(150px, -190px);
+}
+
+.vitelomniflag{
+    transform: translate(218px, -100px);
+}
+
+.vitelwatsappflag{
+    transform: translate(-8px, -153px);
+}
+
+.vitelbusinessphoneflag{
+    transform: translate(-40px, -72px);
+}
+/* SERVICE CARD */
+
+.vitelServiceCard{
+  padding: 9px 21px;
+    border-radius: 60px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+    color: white;
+    transition: 0.4s;
+    cursor: pointer;
+    margin-bottom: 0px;
+    font-size: 14px;
+}
+
+.vitelServiceCard:hover{
+    transform:
+    translateY(-10px)
+    scale(1.05);
+
+    background:
+    rgba(255,255,255,0.15);
+}
+
+/* =========================================================
+RESPONSIVE
+========================================================= */
+
+@media(max-width:992px){
+
+    .vitelHeroTitle{
+        font-size:42px;
+    }
+
+    .vitelHeroDesc{
+        font-size:16px;
+    }
+
+    .vitelServicesWrap{
+        flex-wrap:wrap;
+        gap:20px;
+        bottom:20px;
+    }
+
+    #vitelAstronaut{
+        width:120px;
+    }
+
+}
+
+</style>
+
+<style>
+    body {
+    margin: 0;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    background-image: url("https://user-images.githubusercontent.com/26748614/96337246-f14d4580-1085-11eb-8793-a86d929e034d.jpg");
+    background-size: cover;
+    backdrop-filter:  brightness(50%);
+   font-family: Tahoma, Verdana, Segoe, sans-serif;
+}
+
+canvas {
+    display: block;
+}
+
+#canvas_container {
+    width: 100%;
+    height: 100vh;
+}
+
+.btn {
+  position: absolute;
+  bottom: 30px;
+  right: 0px;
+  transform: translateX(-50%);
+  border: 1px solid white;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  padding: 0.5rem 0.7em;
+  background: transparent;
+  color: #F9B31C;
+  -webkit-font-smoothing: antialiased;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .3s;
+  z-index: 11;
+  text-transform: uppercase;
+}
+
+a.btn_works {
+  left: 100px;
+  right: unset;
+  text-decoration: none;
+  font-family: Tahoma, Verdana, Segoe, sans-serif;
+}
+
+.btn:hover {
+  background: #ffffff;
+  color: #2a2b2f;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<!-- =========================================================
+HERO SECTION
+========================================================= -->
+
+<section id="vitelHeroBanner">
+
+    <!-- WEBGL -->
+    <!-- <canvas id="vitelWebGLCanvas"></canvas> -->
+
+    <div id="canvas_container"></div>
+
+    <!-- GLOW -->
+    <div class="vitelMoonGlow"></div>
+
+    <!-- CONTENT -->
+    <div class="vitelHeroContent">
+
+        <h1 class="vitelHeroTitle">
+
+            The Smarter way to Run & Scale
+            <br>
+
+            Your <span>Business Communication</span>
+
+        </h1>
+
+        <p class="vitelHeroDesc">
+
+            AI-powered unified communications for calling,
+            messaging, meetings, and automation —
+            all in one platform.
+
+        </p>
+
+        <div class="vitelHeroButtons">
+
+            <a href="#" class="vitelHeroBtn">
+                Request Demo
+            </a>
+
+            <a href="#" class="vitelHeroBtn">
+                Buy Now
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- ASTRONAUT -->
+    <img
+    id="vitelAstronaut"
+    src="./astronut.png"
+    />
+
+    <!-- SERVICES -->
+    <div class="vitelServicesWrap">
+
+        <div class="vitelServiceFlag vitelbusinessphoneflag">
+
+            <div class="vitelServiceCard">
+                Business Phone System
+            </div>
+
+        </div>
+
+        <div class="vitelServiceFlag vitelwatsappflag">
+
+            <div class="vitelServiceCard">
+                Business WhatsApp
+            </div>
+
+        </div>
+
+        <div class="vitelServiceFlag vitelomniflag">
+
+            <div class="vitelServiceCard">
+                Vitel Omnichannel
+            </div>
+
+        </div>
+
+        <div class="vitelServiceFlag vitelsmsFlag">
+
+            <div class="vitelServiceCard">
+                Vitel SMS
+            </div>
+
+        </div>
+
+        <div class="vitelServiceFlag vitelServiceFlag--offset">
+
+            <div class="vitelServiceCard">
+                AI Vitel Meet
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script>
+
+/* =========================================================
+THREE JS WEBGL
+========================================================= */
+
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(
+75,
+window.innerWidth/window.innerHeight,
+0.1,
+1000
+);
+
+const renderer = new THREE.WebGLRenderer({
+canvas:document.getElementById("vitelWebGLCanvas"),
+alpha:true,
+antialias:true
+});
+
+renderer.setSize(
+window.innerWidth,
+window.innerHeight
+);
+
+renderer.setPixelRatio(window.devicePixelRatio);
+
+camera.position.z = 5;
+
+/* =========================================================
+STARS
+========================================================= */
+
+const starsGeometry =
+new THREE.BufferGeometry();
+
+const starsCount = 5000;
+
+const starsPositions = [];
+
+for(let i=0;i<starsCount;i++){
+
+    starsPositions.push(
+        (Math.random()-0.5)*2000,
+        (Math.random()-0.5)*2000,
+        (Math.random()-0.5)*2000
+    );
+
+}
+
+starsGeometry.setAttribute(
+"position",
+new THREE.Float32BufferAttribute(
+starsPositions,
+3
+)
+);
+
+const starsMaterial =
+new THREE.PointsMaterial({
+color:"#ffffff",
+size:1
+});
+
+const stars =
+new THREE.Points(
+starsGeometry,
+starsMaterial
+);
+
+scene.add(stars);
+
+/* =========================================================
+3D GLOBE
+========================================================= */
+
+const globeGeometry =
+new THREE.SphereGeometry(
+8,
+128,
+128
+);
+
+const globeTexture =
+new THREE.TextureLoader().load(
+"./moon-bg.png"
+);
+
+const globeMaterial =
+new THREE.MeshStandardMaterial({
+map:globeTexture,
+roughness:1
+});
+
+const globe =
+new THREE.Mesh(
+globeGeometry,
+globeMaterial
+);
+
+scene.add(globe);
+
+globe.position.set(0,7,-3);
+
+/* =========================================================
+LIGHTS
+========================================================= */
+
+const ambientLight =
+new THREE.AmbientLight(
+0xffffff,
+1.5
+);
+
+scene.add(ambientLight);
+
+const directionalLight =
+new THREE.DirectionalLight(
+0xffffff,
+3
+);
+
+directionalLight.position.set(
+5,
+5,
+5
+);
+
+scene.add(directionalLight);
+
+/* =========================================================
+ANIMATE
+========================================================= */
+
+function animate(){
+
+    requestAnimationFrame(animate);
+
+    globe.rotation.y += 0.0015;
+
+    stars.rotation.y += 0.0002;
+
+    renderer.render(scene,camera);
+
+}
+
+animate();
+
+/* =========================================================
+RESIZE
+========================================================= */
+
+window.addEventListener(
+"resize",
+()=>{
+
+camera.aspect =
+window.innerWidth/window.innerHeight;
+
+camera.updateProjectionMatrix();
+
+renderer.setSize(
+window.innerWidth,
+window.innerHeight
+);
+
+});
+
+/* =========================================================
+ASTRONAUT MOVEMENT TO FLAGS
+========================================================= */
+
+const vitelAstronaut =
+document.getElementById(
+"vitelAstronaut"
+);
+
+// Get all flag elements
+const flagElements =
+document.querySelectorAll(
+".vitelServiceFlag"
+);
+
+// Convert NodeList to Array for easier handling
+const flags = Array.from(flagElements);
+
+// Distance threshold - if mouse is beyond this, astronaut returns to center
+const INTERACTION_THRESHOLD = 400;
+
+// Function to calculate distance between mouse and flag
+function getDistance(
+mouseX,
+mouseY,
+flagX,
+flagY
+){
+    const dx = mouseX - flagX;
+    const dy = mouseY - flagY;
+    return Math.sqrt(dx*dx + dy*dy);
+}
+
+// Function to get flag center position
+function getFlagPosition(flagElement){
+    const rect = flagElement.getBoundingClientRect();
+    return {
+        x: rect.left + rect.width/2,
+        y: rect.top + rect.height/2
+    };
+}
+
+// Function to find closest flag to mouse
+function getClosestFlag(mouseX, mouseY){
+    let closestFlag = null;
+    let closestDistance = Infinity;
+
+    flags.forEach(flag=>{
+        const flagPos = getFlagPosition(flag);
+        const distance = getDistance(
+            mouseX,
+            mouseY,
+            flagPos.x,
+            flagPos.y
+        );
+
+        if(distance < closestDistance){
+            closestDistance = distance;
+            closestFlag = flag;
+        }
+    });
+
+    return {
+        flag: closestFlag,
+        distance: closestDistance
+    };
+}
+
+// Track mouse movement and move astronaut to closest flag
+document.addEventListener(
+"mousemove",
+(e)=>{
+
+    // Find closest flag to mouse
+    const {flag: closestFlag, distance: closestDistance} =
+    getClosestFlag(
+        e.clientX,
+        e.clientY
+    );
+
+    // If mouse is close to a flag, move astronaut to it
+    if(closestFlag && closestDistance < INTERACTION_THRESHOLD){
+        // Get flag position
+        const flagRect =
+        closestFlag.getBoundingClientRect();
+
+        const flagCenterX =
+        flagRect.left +
+        flagRect.width/2 -
+        window.innerWidth/2;
+
+        // Move astronaut to flag position
+        gsap.to(
+            vitelAstronaut,
+            {
+                x: flagCenterX,
+                duration: 0.8,
+                ease: "power3.out"
+            }
+        );
+    }
+    else{
+        // Mouse is far from all flags, move astronaut back to center
+        gsap.to(
+            vitelAstronaut,
+            {
+                x: 0,
+                duration: 0.8,
+                ease: "power3.out"
+            }
+        );
+    }
+
+});
+
+/* =========================================================
+SERVICE HOVER MOVEMENT
+========================================================= */
+
+const vitelServices =
+document.querySelectorAll(
+".vitelServiceCard"
+);
+
+vitelServices.forEach((service, index)=>{
+
+    service.addEventListener(
+        "mouseenter",
+        ()=>{
+
+            // Get parent flag element
+            const parentFlag =
+            service.closest(
+                ".vitelServiceFlag"
+            );
+
+            const flagRect =
+            parentFlag
+            .getBoundingClientRect();
+
+            const targetX =
+            flagRect.left +
+            flagRect.width/2 -
+            window.innerWidth/2;
+
+            gsap.to(
+                vitelAstronaut,
+                {
+                    x: targetX,
+                    duration: 0.6,
+                    ease: "power3.out"
+                }
+            );
+
+        }
+    );
+
+});
+
+/* =========================================================
+GSAP ANIMATION
+========================================================= */
+
+gsap.registerPlugin(
+ScrollTrigger
+);
+
+gsap.from(
+".vitelHeroTitle",
+{
+y:120,
+opacity:0,
+duration:1.5
+}
+);
+
+gsap.from(
+".vitelHeroDesc",
+{
+y:80,
+opacity:0,
+duration:1.5,
+delay:0.3
+}
+);
+
+gsap.from(
+".vitelHeroButtons",
+{
+y:80,
+opacity:0,
+duration:1.5,
+delay:0.5
+}
+);
+
+gsap.from(
+".vitelServiceFlag",
+{
+y:80,
+opacity:0,
+stagger:0.15,
+duration:1.2,
+delay:0.8
+}
+);
+
+/* =========================================================
+SCROLL BASED ANIMATION
+========================================================= */
+
+gsap.to(
+globe.rotation,
+{
+y:6,
+
+scrollTrigger:{
+trigger:"#vitelHeroBanner",
+start:"top top",
+end:"bottom top",
+scrub:1
+}
+}
+);
+
+gsap.to(
+camera.position,
+{
+z:3,
+
+scrollTrigger:{
+trigger:"#vitelHeroBanner",
+start:"top top",
+end:"bottom top",
+scrub:1
+}
+}
+);
+
+</script>
+
+<script>
+    //This code is outdated. For the latest version of the project, check here: https://codepen.io/isladjan/full/vEBdwOP
+
+//Author: isladjan - https://isladjan.com/
+
+let renderer,
+scene,
+camera,
+sphereBg,
+nucleus,
+stars,
+controls,
+clock,
+container = document.getElementById("canvas_container"),
+timeout_Debounce,
+noise = new SimplexNoise(),
+cameraSpeed = 0,
+blobScale = 3,
+delta = 0;
+
+
+init();
+limitFPS(1 / 60);
+
+
+function init() {
+    scene = new THREE.Scene();
+
+    camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.01, 1000)
+    camera.position.set(0,0,230);
+
+    const directionalLight = new THREE.DirectionalLight("#fff", 1);
+    directionalLight.position.set(0, 50, -20);
+    scene.add(directionalLight);
+
+    let ambientLight = new THREE.AmbientLight("#ffffff", 1);
+    ambientLight.position.set(0, 20, 20);
+    scene.add(ambientLight);
+
+    renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true
+    });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    container.appendChild(renderer.domElement);
+  
+   clock = new THREE.Clock();
+
+    //OrbitControl
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 4;
+    controls.maxDistance = 350;
+    controls.minDistance = 150;
+    controls.enablePan = false;
+
+    const loader = new THREE.TextureLoader();
+    const textureSphereBg = loader.load('https://i.ibb.co/HC0vxMw/sky2.jpg');
+    const texturenucleus = loader.load('https://i.ibb.co/hcN2qXk/star-nc8wkw.jpg');
+    const textureStar = loader.load("https://i.ibb.co/ZKsdYSz/p1-g3zb2a.png");
+    const texture1 = loader.load("https://i.ibb.co/F8by6wW/p2-b3gnym.png");  
+    const texture2 = loader.load("https://i.ibb.co/yYS2yx5/p3-ttfn70.png");
+    const texture4 = loader.load("https://i.ibb.co/yWfKkHh/p4-avirap.png");
+
+
+    /*  Nucleus  */   
+    texturenucleus.anisotropy = 16;
+    let icosahedronGeometry = new THREE.IcosahedronGeometry(30, 10);
+    let lambertMaterial = new THREE.MeshPhongMaterial({ map: texturenucleus });
+    nucleus = new THREE.Mesh(icosahedronGeometry, lambertMaterial);
+    scene.add(nucleus);
+
+
+    /*    Sphere  Background   */
+    textureSphereBg.anisotropy = 16;
+    let geometrySphereBg = new THREE.SphereBufferGeometry(150, 40, 40);
+    let materialSphereBg = new THREE.MeshBasicMaterial({
+        side: THREE.BackSide,
+        map: textureSphereBg,
+    });
+    sphereBg = new THREE.Mesh(geometrySphereBg, materialSphereBg);
+    scene.add(sphereBg);
+
+
+    /*    Moving Stars   */
+    let starsGeometry = new THREE.Geometry();
+
+    for (let i = 0; i < 50; i++) {
+        let particleStar = randomPointSphere(150); 
+
+        particleStar.velocity = THREE.MathUtils.randInt(50, 200);
+
+        particleStar.startX = particleStar.x;
+        particleStar.startY = particleStar.y;
+        particleStar.startZ = particleStar.z;
+
+        starsGeometry.vertices.push(particleStar);
+    }
+    let starsMaterial = new THREE.PointsMaterial({
+        size: 5,
+        color: "#ffffff",
+        transparent: true,
+        opacity: 0.8,
+        map: textureStar,
+        blending: THREE.AdditiveBlending,
+    });
+    starsMaterial.depthWrite = false;  
+    stars = new THREE.Points(starsGeometry, starsMaterial);
+    scene.add(stars);
+
+
+    /*    Fixed Stars   */
+    function createStars(texture, size, total) {
+        let pointGeometry = new THREE.Geometry();
+        let pointMaterial = new THREE.PointsMaterial({
+            size: size,
+            map: texture,
+            blending: THREE.AdditiveBlending,                      
+        });
+
+        for (let i = 0; i < total; i++) {
+            let radius = THREE.MathUtils.randInt(149, 70); 
+            let particles = randomPointSphere(radius);
+            pointGeometry.vertices.push(particles);
+        }
+        return new THREE.Points(pointGeometry, pointMaterial);
+    }
+    scene.add(createStars(texture1, 15, 20));   
+    scene.add(createStars(texture2, 5, 5));
+    scene.add(createStars(texture4, 7, 5));
+
+
+    function randomPointSphere (radius) {
+        let theta = 2 * Math.PI * Math.random();
+        let phi = Math.acos(2 * Math.random() - 1);
+        let dx = 0 + (radius * Math.sin(phi) * Math.cos(theta));
+        let dy = 0 + (radius * Math.sin(phi) * Math.sin(theta));
+        let dz = 0 + (radius * Math.cos(phi));
+        return new THREE.Vector3(dx, dy, dz);
+    }
+}
+
+
+  // Caps the rendering loop to a specified frame interval
+ function limitFPS(interval) {
+    requestAnimationFrame(limitFPS.bind(this, interval));
+    delta += clock.getDelta();
+
+    if (delta > interval) {
+       animate();
+     delta = delta % interval;
+    }
+  }
+
+
+function animate() {
+
+    //Stars  Animation
+    stars.geometry.vertices.forEach(function (v) {
+        v.x += (0 - v.x) / v.velocity;
+        v.y += (0 - v.y) / v.velocity;
+        v.z += (0 - v.z) / v.velocity;
+
+        v.velocity -= 0.3;
+
+        if (v.x <= 5 && v.x >= -5 && v.z <= 5 && v.z >= -5) {
+            v.x = v.startX;
+            v.y = v.startY;
+            v.z = v.startZ;
+            v.velocity = THREE.MathUtils.randInt(50, 300);
+        }
+    });
+
+
+    //Nucleus Animation
+    nucleus.geometry.vertices.forEach(function (v) {
+        let time = Date.now();
+        v.normalize();
+        let distance = nucleus.geometry.parameters.radius + noise.noise3D(
+            v.x + time * 0.0005,
+            v.y + time * 0.0003,
+            v.z + time * 0.0008
+        ) * blobScale;
+        v.multiplyScalar(distance);
+    })
+    nucleus.geometry.verticesNeedUpdate = true;
+    nucleus.geometry.normalsNeedUpdate = true;
+    nucleus.geometry.computeVertexNormals();
+    nucleus.geometry.computeFaceNormals();
+    nucleus.rotation.y += 0.002;
+
+
+    //Sphere Beckground Animation
+    sphereBg.rotation.x += 0.002;
+    sphereBg.rotation.y += 0.002;
+    sphereBg.rotation.z += 0.002;
+
+    
+    controls.update();
+    stars.geometry.verticesNeedUpdate = true;
+    renderer.render(scene, camera);
+}
+
+
+
+/*     Resize     */
+window.addEventListener("resize", () => {
+    clearTimeout(timeout_Debounce);
+    timeout_Debounce = setTimeout(onWindowResize, 80);
+});
+function onWindowResize() {
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(container.clientWidth, container.clientHeight);
+}
+
+
+
+/*     Fullscreen btn     */
+let fullscreen;
+let fsEnter = document.querySelector(".fullscr");
+fsEnter.addEventListener('click', function (e) {
+    e.preventDefault();
+    if (!fullscreen) {
+        fullscreen = true;
+        document.documentElement.requestFullscreen();
+        fsEnter.innerHTML = "Exit Fullscreen";
+    }
+    else {
+        fullscreen = false;
+        document.exitFullscreen();
+        fsEnter.innerHTML = "Go Fullscreen";
+    }
+});
+</script>
+
+</body>
+</html>
